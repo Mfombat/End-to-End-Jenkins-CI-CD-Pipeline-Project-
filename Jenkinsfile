@@ -60,39 +60,39 @@ pipeline {
             }
         }
     }
-    // stage('SonarQube Inspection') {
-    //     steps {
-    //        // dir('realworld-cicd-pipeline-project-main/') {
-    //         withSonarQubeEnv('SonarQube') { 
-    //             withCredentials([string(credentialsId: 'SonarQube-Token', variable: 'SONAR_TOKEN')]) {
-    //             sh """
-    //             mvn sonar:sonar \
-    //             -Dsonar.projectKey=prosperous-cicd-project \
-    //             -Dsonar.host.url=http://172.31.29.161:9000 \
-    //             -Dsonar.login=$SONAR_TOKEN
-    //             """
-    //             }
-    //         }
-    //        // }
-    //     }
-    // }
-    // stage('SonarQube Quality Gate') {
-    //     steps {
-    //       // Set a timeout for the quality gate check
-    //         timeout(time: 1, unit: 'HOURS') {
-    //         // Wait for the SonarQube quality gate result and abort the pipeline if it fails
-    //         waitForQualityGate(abortPipeline: true)
-    //     }
-    // }
+    stage('SonarQube Inspection') {
+        steps {
+           // dir('realworld-cicd-pipeline-project-main/') {
+            withSonarQubeEnv('SonarQube') { 
+                withCredentials([string(credentialsId: 'SonarQube-Token', variable: 'SONAR_TOKEN')]) {
+                sh """
+                mvn sonar:sonar \
+                -Dsonar.projectKey=java-webapp-project \
+                -Dsonar.host.url=http://34.229.165.80:9000 \
+                -Dsonar.login=41b26c1b887308ba663e107b4e0f34f5b1fa0cc0
+                """
+                }
+            }
+           // }
+        }
+    }
+    stage('SonarQube Quality Gate') {
+        steps {
+          // Set a timeout for the quality gate check
+            timeout(time: 1, unit: 'HOURS') {
+            // Wait for the SonarQube quality gate result and abort the pipeline if it fails
+            waitForQualityGate(abortPipeline: true)
+        }
+    }
 
-    // }
+    }
     stage("Nexus Artifact Uploader"){
         steps{
           // dir('realworld-cicd-pipeline-project-main/') {
            nexusArtifactUploader(
               nexusVersion: 'nexus3',
               protocol: 'http',
-              nexusUrl: '172.31.23.9:8081',
+              nexusUrl: '50.17.39.82',
               groupId: 'webapp',
               version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
               repository: 'maven-releases',  //"${NEXUS_REPOSITORY}",
